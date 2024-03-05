@@ -8,3 +8,6 @@ class Ground(pygame.sprite.Sprite):
         self.image.fill((125, 125, 125))
         self.rect = self.image.get_rect()
         self.rect.bottom = SCREEN_HEIGHT
+    
+    def has_collided_with(self, sprite):
+        return self.rect.colliderect(sprite)

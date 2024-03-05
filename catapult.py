@@ -4,9 +4,8 @@ from config import SCREEN_WIDTH, SCREEN_HEIGHT, GREEN, CATAPULT_COOLDOWN_TIME
 from projectile import Projectile
 
 class Catapult(pygame.sprite.Sprite):
-    def __init__(self, all_sprites):
+    def __init__(self):
         super().__init__()
-        self.all_sprites = all_sprites
         self.image = pygame.Surface((50, 50))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
@@ -21,11 +20,12 @@ class Catapult(pygame.sprite.Sprite):
         if self.cooldown > 0:
             self.cooldown -= 1
 
-    def launch_projectile(self, mouse_held_duration):
+    def launch_projectile(self, all_sprites, projectiles, mouse_held_duration):
         if self.cooldown == 0:
             initial_speed = 5 + mouse_held_duration // 100
             projectile = Projectile(self.rect.centerx, self.rect.centery, self.angle, initial_speed)
-            self.all_sprites.add(projectile)
+            all_sprites.add(projectile)
+            projectiles.add(projectile)
             self.cooldown = CATAPULT_COOLDOWN_TIME
 
     def aim(self, mouse_pos):
