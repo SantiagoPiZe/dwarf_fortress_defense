@@ -1,9 +1,12 @@
 import pygame
 import sys
+import random
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, BLACK, FPS
 from catapult import Catapult
 from projectile import Projectile
 from wall import Wall
+from cart import Cart
+from ground import Ground
 
 # Pygame initialization
 pygame.init()
@@ -17,8 +20,13 @@ projectiles = pygame.sprite.Group()
 # Create instances
 catapult = Catapult(all_sprites)
 wall = Wall()
+cart_entity = Cart(velocity=random.randint(15, 25))
+ground = Ground()
+
+all_sprites.add(cart_entity)
 all_sprites.add(catapult)
 all_sprites.add(wall)
+all_sprites.add(ground)
 
 # Main game loop
 running = True
