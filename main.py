@@ -18,7 +18,7 @@ projectiles = pygame.sprite.Group()
 
 
 # Create instances
-catapult = Catapult(all_sprites)
+catapult = Catapult()
 wall = Wall()
 cart_entity = Cart(velocity=random.randint(15, 25))
 ground = Ground()
@@ -40,13 +40,9 @@ while running:
             mouse_pressed_time = pygame.time.get_ticks()
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             mouse_held_duration = pygame.time.get_ticks() - mouse_pressed_time
-            catapult.launch_projectile(mouse_held_duration)
+            catapult.launch_projectile(all_sprites, projectiles, mouse_held_duration)
 
     all_sprites.update()
-
-    for projectile in projectiles:
-        if wall.is_collided_with(projectile):
-            projectile.kill()
 
     mouse_pos = pygame.mouse.get_pos()
 
@@ -55,6 +51,12 @@ while running:
     pygame.draw.line(screen, (255, 255, 255), catapult.rect.center, mouse_pos, 2)
 
     catapult.aim(mouse_pos)
+
+    for projectile in projectiles:
+        if wall.has_collided_with(projectile.rect):
+            projectile.kill()
+        if ground.has_collided_with(projectile.rect):
+            projectile.on_ground = True
 
     pygame.display.flip()
     clock.tick(FPS)

@@ -14,11 +14,17 @@ class Projectile(pygame.sprite.Sprite):
         self.gravity = 0.5 
         self.vx = self.speed * math.cos(self.angle)  
         self.vy = -self.speed * math.sin(self.angle)
+        self.on_ground = False
 
     def update(self):
         self.rect.x += self.vx
-        self.vy += self.gravity
-        self.rect.y += self.vy
+        if(not self.on_ground):
+            self.vy += self.gravity
+            self.rect.y += self.vy
+        else:
+            self.vy = 0
+            if( -1 < self.vx < 1):
+                self.vx = -1
 
         if not pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT).contains(self.rect):
             self.kill()
