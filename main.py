@@ -13,14 +13,22 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
+dwarf_image = pygame.image.load("assets/dwarf.png").convert_alpha()
+goblin_image = pygame.image.load("assets/goblin.png").convert_alpha()
+wall_image = pygame.image.load("assets/wall.png").convert_alpha()
+catapult_image = pygame.image.load('assets/cannon.png').convert_alpha()
+background_image = pygame.image.load('assets/background.webp').convert()
+background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+
 all_sprites = pygame.sprite.Group()  
 projectiles = pygame.sprite.Group()
 
 
 # Create instances
-catapult = Catapult()
-wall = Wall()
-cart_entity = Cart(velocity=random.randint(15, 25))
+catapult = Catapult(catapult_image, dwarf_image)
+wall = Wall(wall_image)
+cart_entity = Cart(velocity=random.randint(15, 25), goblin_image=goblin_image)
 ground = Ground()
 
 all_sprites.add(cart_entity)
@@ -31,7 +39,7 @@ all_sprites.add(ground)
 # Main game loop
 running = True
 while running:
-    screen.fill(BLACK)
+    screen.blit(background_image, (0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -57,9 +65,9 @@ while running:
             projectile.kill()
         if ground.has_collided_with(projectile.rect):
             projectile.on_ground = True
-            projectile.rect.bottom = SCREEN_HEIGHT - 50
     pygame.display.flip()
     clock.tick(FPS)
+    
 
 pygame.quit()
 sys.exit()
