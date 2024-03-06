@@ -57,7 +57,7 @@ while running:
             projectile.kill()
         if ground.has_collided_with(projectile.rect):
             projectile.on_ground = True
-
+            projectile.rect.bottom = SCREEN_HEIGHT - 50
     pygame.display.flip()
     clock.tick(FPS)
 
