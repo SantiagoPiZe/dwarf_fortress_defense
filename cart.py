@@ -16,3 +16,6 @@ class Cart(pygame.sprite.Sprite):
         t = pygame.time.get_ticks() / 1000 - self.start_time
         # MRU: x = x0 + v * t
         self.rect.x = self.speed * t
+    
+    def add_dwarf(self, dwarf):
+        self.speed += dwarf.vx
