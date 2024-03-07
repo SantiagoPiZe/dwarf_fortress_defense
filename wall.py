@@ -1,6 +1,7 @@
 import pygame
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, WHITE
 
+
 class Wall(pygame.sprite.Sprite):
     def __init__(self, wall_image):
         super().__init__()

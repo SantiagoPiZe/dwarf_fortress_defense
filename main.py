@@ -57,8 +57,10 @@ while running:
 
     pygame.draw.line(screen, (255, 255, 255), catapult.rect.center, mouse_pos, 2)
 
-    catapult.aim(mouse_pos)
+    for cart in carts:
+        cart.draw_speed(screen)
 
+    catapult.aim(mouse_pos)
     for projectile in projectiles:
         if wall.has_collided_with(projectile.rect):
             projectile.kill()

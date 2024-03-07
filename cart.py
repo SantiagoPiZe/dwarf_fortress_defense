@@ -15,22 +15,35 @@ class Cart(pygame.sprite.Sprite):
         self.start_time_in_sec = pygame.time.get_ticks() / 1000
         self.weight = 5
         self.wall_instance = wall_instance
-        self.ttl = 3000
+        self.ttl = 2500
+        self.x0 = 0
+        self.font = pygame.font.Font(None, 24)
+
 
     def update(self):
         t = pygame.time.get_ticks() / 1000 - self.start_time_in_sec
         # MRU: x = x0 + v * t
         self.has_collided_with_wall()
-        self.rect.x = self.speed * t
+        self.rect.x = self.x0 + self.speed * t
         self.ttl -= 1
         if self.ttl <= 0:
             self.kill()
 
+    def draw_speed(self, screen):
+        speed_text = self.font.render(str(self.speed), True, (255, 255, 255))
+        screen.blit(speed_text, (self.rect.x, self.rect.y - 20))
+
     def add_dwarf(self, dwarf):
-        # wtot * stot = m1 * s1 + m2* s2
-        prev_weight = self.weight
-        self.weight += dwarf.weight
-        self.speed = (prev_weight * self.speed + dwarf.vx * dwarf.weight) / self.weight
+        # Conservación del momento lineal: p_before = p_after
+        # p_before = m1 * v1 + m2 * v2
+        # p_after = (m1 + m2) * v_after
+        # v_after = (m1 * v1 + m2 * v2) / (m1 + m2)
+        total_momentum_before = self.weight * self.speed + dwarf.weight * dwarf.vx
+        total_weight_after = self.weight + dwarf.weight
+        self.speed = total_momentum_before / total_weight_after
+        self.weight = total_weight_after
+        self.x0 = self.rect.x
+        self.start_time_in_sec = pygame.time.get_ticks() / 1000
         dwarf.kill()
 
     def has_collided_with_wall(self):

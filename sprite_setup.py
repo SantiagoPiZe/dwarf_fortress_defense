@@ -1,6 +1,7 @@
 import pygame
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
 
+
 def setup_sprites():
     dwarf_image = pygame.image.load("assets/dwarf.png").convert_alpha()
     goblin_image = pygame.image.load("assets/goblin.png").convert_alpha()
@@ -19,5 +20,5 @@ def setup_sprites():
         'background_image': background_image,
         'life_image': life_image
     }
-    
+
     return sprites

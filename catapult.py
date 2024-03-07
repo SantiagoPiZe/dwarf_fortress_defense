@@ -3,6 +3,7 @@ import math
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, GREEN, CATAPULT_COOLDOWN_TIME
 from projectile import Projectile
 
+
 class Catapult(pygame.sprite.Sprite):
     def __init__(self, catapult_image, dwarf_image):
         super().__init__()
@@ -42,10 +43,11 @@ class Catapult(pygame.sprite.Sprite):
         dy = mouse_pos[1] - self.rect.centery
         angle = math.degrees(math.atan2(-dy, dx))
         self.angle = max(self.min_angle, min(self.max_angle, angle))
-        if(angle > 0 and angle < 90):
+        if (angle > 0 and angle < 90):
             self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (50, 50)), -70)
         else:
-            if(angle < 0):
+            if (angle < 0):
                 self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (50, 50)), 20)
             else:
-                self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (50, 50)), 200 + self.angle)
+                self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (50, 50)),
+                                                     200 + self.angle)
