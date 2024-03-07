@@ -1,7 +1,8 @@
 import pygame
 import sys
 import random
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, BLACK, FPS, CART_COOLDOWN_TIME
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, BLACK, RED, FPS, CART_COOLDOWN_TIME
+import config
 from sprite_setup import setup_sprites
 from catapult import Catapult
 from projectile import Projectile
@@ -16,15 +17,11 @@ clock = pygame.time.Clock()
 
 sprites = setup_sprites()
 
-
 all_sprites = pygame.sprite.Group()  
 projectiles = pygame.sprite.Group()
 carts = pygame.sprite.Group()
 
 # Create instances
-catapult = Catapult(all_sprites)
-wall = Wall()
-cart_entity = Cart(velocity=random.randint(15, 25))
 catapult = Catapult(sprites["catapult_image"], sprites["dwarf_image"])
 wall = Wall(sprites["wall_image"])
 cart_spawn_cooldown = 0
@@ -50,13 +47,9 @@ while running:
             mouse_pressed_time = pygame.time.get_ticks()
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             mouse_held_duration = pygame.time.get_ticks() - mouse_pressed_time
-            catapult.launch_projectile(mouse_held_duration)
+            catapult.launch_projectile(all_sprites, projectiles, mouse_held_duration)
 
     all_sprites.update()
-
-    for projectile in projectiles:
-        if wall.is_collided_with(projectile):
-            projectile.kill()
 
     mouse_pos = pygame.mouse.get_pos()
 
@@ -73,7 +66,7 @@ while running:
             projectile.on_ground = True
 
     if(cart_spawn_cooldown == 0 ):
-        new_cart = Cart(velocity=random.randint(15, 25), goblin_image=sprites["goblin_image"])
+        new_cart = Cart(velocity=random.randint(15, 25), goblin_image=sprites["goblin_image"], wall_instance = wall)
         all_sprites.add(new_cart)
         carts.add(new_cart)
         cart_spawn_cooldown = CART_COOLDOWN_TIME
@@ -83,8 +76,16 @@ while running:
         for current_projectile in collided_projectiles:
             current_cart.add_dwarf(current_projectile)
 
+    #  game over screen
+    if config.lives <= 0:
+        screen.fill(BLACK)
+        font = pygame.font.SysFont(None, 36)
+        text = font.render("Game Over", True, RED)
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text, text_rect)
+        pygame.display.flip()
+        pygame.time.delay(3000)  # Pause for 3 seconds 
+        running = False
+
     pygame.display.flip()
     clock.tick(FPS)
-
-pygame.quit()
-sys.exit()

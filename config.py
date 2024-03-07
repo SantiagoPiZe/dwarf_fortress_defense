@@ -1,3 +1,9 @@
+def init():
+    global lives
+    lives = 3
+
+init()
+
 #screen config
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -12,4 +18,4 @@ BLUE = (0, 0, 255)
 FPS = 60
 
 CATAPULT_COOLDOWN_TIME = 150
-CART_COOLDOWN_TIME = 550
+CART_COOLDOWN_TIME = 750
