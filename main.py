@@ -59,6 +59,7 @@ while running:
 
     for cart in carts:
         cart.draw_speed(screen)
+        cart.draw_ttl(screen)
 
     catapult.aim(mouse_pos)
     for projectile in projectiles:
