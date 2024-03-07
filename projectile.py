@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, RED
 
 class Projectile(pygame.sprite.Sprite):
@@ -13,6 +14,7 @@ class Projectile(pygame.sprite.Sprite):
         self.gravity = 0.5 
         self.vx = self.speed * math.cos(self.angle)  
         self.vy = -self.speed * math.sin(self.angle)
+        self.weight = random.uniform(0.1, 0.5)
         self.on_ground = False
 
     def update(self):
@@ -22,6 +24,7 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.y += self.vy
         else:
             self.vy = 0
+            self.vx = -1
             if( -1 < self.vx < 1):
                 self.vx = -1
 

@@ -1,7 +1,9 @@
 import pygame
 import sys
 import random
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, BLACK, FPS
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, BLACK, RED, FPS, CART_COOLDOWN_TIME
+import config
+from sprite_setup import setup_sprites
 from catapult import Catapult
 from projectile import Projectile
 from wall import Wall
@@ -13,25 +15,18 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-dwarf_image = pygame.image.load("assets/dwarf.png").convert_alpha()
-goblin_image = pygame.image.load("assets/goblin.png").convert_alpha()
-wall_image = pygame.image.load("assets/wall.png").convert_alpha()
-catapult_image = pygame.image.load('assets/cannon.png').convert_alpha()
-background_image = pygame.image.load('assets/background.webp').convert()
-background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-
+sprites = setup_sprites()
 
 all_sprites = pygame.sprite.Group()  
 projectiles = pygame.sprite.Group()
-
+carts = pygame.sprite.Group()
 
 # Create instances
-catapult = Catapult(catapult_image, dwarf_image)
-wall = Wall(wall_image)
-cart_entity = Cart(velocity=random.randint(15, 25), goblin_image=goblin_image)
+catapult = Catapult(sprites["catapult_image"], sprites["dwarf_image"])
+wall = Wall(sprites["wall_image"])
+cart_spawn_cooldown = 0
 ground = Ground()
 
-all_sprites.add(cart_entity)
 all_sprites.add(catapult)
 all_sprites.add(wall)
 all_sprites.add(ground)
@@ -39,7 +34,11 @@ all_sprites.add(ground)
 # Main game loop
 running = True
 while running:
-    screen.blit(background_image, (0, 0))
+    screen.fill(BLACK)
+    if(cart_spawn_cooldown > 0):
+        cart_spawn_cooldown -=1
+
+    screen.blit(sprites["background_image"], (0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -65,9 +64,28 @@ while running:
             projectile.kill()
         if ground.has_collided_with(projectile.rect):
             projectile.on_ground = True
+
+    if(cart_spawn_cooldown == 0 ):
+        new_cart = Cart(velocity=random.randint(15, 25), goblin_image=sprites["goblin_image"], wall_instance = wall)
+        all_sprites.add(new_cart)
+        carts.add(new_cart)
+        cart_spawn_cooldown = CART_COOLDOWN_TIME
+
+    cart_dwarf_collision = pygame.sprite.groupcollide(carts, projectiles, False, False)
+    for current_cart, collided_projectiles in cart_dwarf_collision.items():
+        for current_projectile in collided_projectiles:
+            current_cart.add_dwarf(current_projectile)
+
+    #  game over screen
+    if config.lives <= 0:
+        screen.fill(BLACK)
+        font = pygame.font.SysFont(None, 36)
+        text = font.render("Game Over", True, RED)
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text, text_rect)
+        pygame.display.flip()
+        pygame.time.delay(3000)  # Pause for 3 seconds 
+        running = False
+
     pygame.display.flip()
     clock.tick(FPS)
-    
-
-pygame.quit()
-sys.exit()
