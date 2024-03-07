@@ -76,6 +76,9 @@ while running:
         for current_projectile in collided_projectiles:
             current_cart.add_dwarf(current_projectile)
 
+    for i in range(config.lives):
+        screen.blit(sprites['life_image'], (10 + i * sprites['life_image'].get_width(), 10))
+
     #  game over screen
     if config.lives <= 0:
         screen.fill(BLACK)
