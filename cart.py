@@ -1,7 +1,7 @@
 import pygame
 
 import config
-from config import SCREEN_HEIGHT
+from config import SCREEN_HEIGHT, RED, BLACK
 
 
 class Cart(pygame.sprite.Sprite):
@@ -30,8 +30,18 @@ class Cart(pygame.sprite.Sprite):
             self.kill()
 
     def draw_speed(self, screen):
-        speed_text = self.font.render(str(self.speed), True, (255, 255, 255))
+        speed_text = self.font.render(str( "%.2f" % self.speed), True, (255, 255, 255))
         screen.blit(speed_text, (self.rect.x, self.rect.y - 20))
+
+    def draw_ttl(self, screen):
+        ttl_percentage = self.ttl / 2500
+        black_surface = pygame.Surface((self.rect.width, 10))
+        black_surface.fill(BLACK)
+        black_surface.set_alpha(128)
+        screen.blit(black_surface, (self.rect.x, self.rect.y))
+        
+        pygame.draw.rect(screen, RED, (self.rect.x, self.rect.y, self.rect.width * ttl_percentage, 10))
+
 
     def add_dwarf(self, dwarf):
         # Conservación del momento lineal: p_before = p_after
