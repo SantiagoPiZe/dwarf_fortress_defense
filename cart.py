@@ -30,7 +30,7 @@ class Cart(pygame.sprite.Sprite):
             self.kill()
 
     def draw_speed(self, screen):
-        speed_text = self.font.render(str( "%.2f" % self.speed), True, (255, 255, 255))
+        speed_text = self.font.render(str( "%.2f" % self.speed) + "m/s", True, (255, 255, 255))
         screen.blit(speed_text, (self.rect.x, self.rect.y - 20))
 
     def draw_ttl(self, screen):
