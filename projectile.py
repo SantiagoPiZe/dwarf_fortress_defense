@@ -7,7 +7,7 @@ from config import SCREEN_WIDTH, SCREEN_HEIGHT, RED
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, x, y, angle, initial_speed, dwarf_image):
         super().__init__()
-        self.image = pygame.transform.scale(dwarf_image, (30, 30))
+        self.image = pygame.transform.scale(dwarf_image, (40, 40))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.angle = math.radians(angle)
