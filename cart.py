@@ -5,9 +5,11 @@ from config import SCREEN_HEIGHT, RED, BLACK
 
 
 class Cart(pygame.sprite.Sprite):
-    def __init__(self, velocity, goblin_image, wall_instance):
+    def __init__(self, velocity, goblin_image, goblin_slow_image, explosion_image, wall_instance):
         super().__init__()
         self.image = pygame.transform.scale(goblin_image, (100, 100))
+        self.image_slow = pygame.transform.scale(goblin_slow_image, (100, 100))
+        self.explosion_image = pygame.transform.scale(explosion_image, (100, 100))
         self.rect = self.image.get_rect()
         self.rect.left = 0
         self.rect.bottom = SCREEN_HEIGHT - 55
@@ -18,6 +20,7 @@ class Cart(pygame.sprite.Sprite):
         self.ttl = 2500
         self.x0 = 0
         self.font = pygame.font.Font(None, 24)
+        self.exploding_time = 10
 
 
     def update(self):
@@ -27,7 +30,7 @@ class Cart(pygame.sprite.Sprite):
         self.rect.x = self.x0 + self.speed * t
         self.ttl -= 1
         if self.ttl <= 0:
-            self.kill()
+            self.explode(decrease_live=False)
 
     def draw_speed(self, screen):
         speed_text = self.font.render(str( "%.2f" % self.speed) + "m/s", True, (255, 255, 255))
@@ -54,9 +57,21 @@ class Cart(pygame.sprite.Sprite):
         self.weight = total_weight_after
         self.x0 = self.rect.x
         self.start_time_in_sec = pygame.time.get_ticks() / 1000
+        self.image = self.image_slow
         dwarf.kill()
 
     def has_collided_with_wall(self):
+        t = pygame.time.get_ticks() / 1000 - self.start_time_in_sec
+
         if self.rect.colliderect(self.wall_instance):
-            config.lives -= 1
+            self.explode(decrease_live=True)
+
+    def explode(self, decrease_live):
+        t = pygame.time.get_ticks() / 1000
+        if(self.exploding_time > 0):
+                self.image = self.explosion_image
+                self.exploding_time = self.exploding_time - 1
+        else:
+            if(decrease_live):
+                config.lives -= 1
             self.kill()

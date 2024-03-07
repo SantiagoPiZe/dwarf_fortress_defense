@@ -69,7 +69,7 @@ while running:
             projectile.on_ground = True
 
     if(cart_spawn_cooldown == 0 ):
-        new_cart = Cart(velocity=random.randint(15, 25), goblin_image=sprites["goblin_image"], wall_instance = wall)
+        new_cart = Cart(velocity=random.randint(15, 25), goblin_image=sprites["goblin_image"], goblin_slow_image=sprites['goblin_slow_image'], explosion_image=sprites['explosion_image'], wall_instance = wall)
         all_sprites.add(new_cart)
         carts.add(new_cart)
         cart_spawn_cooldown = CART_COOLDOWN_TIME
