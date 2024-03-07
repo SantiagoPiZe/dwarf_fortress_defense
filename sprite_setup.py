@@ -5,6 +5,8 @@ from config import SCREEN_WIDTH, SCREEN_HEIGHT
 def setup_sprites():
     dwarf_image = pygame.image.load("assets/dwarf.png").convert_alpha()
     goblin_image = pygame.image.load("assets/goblin.png").convert_alpha()
+    goblin_slow_image = pygame.image.load("assets/goblin_slow.png").convert_alpha()
+    explosion_image = pygame.image.load("assets/explosion.png").convert_alpha()
     wall_image = pygame.image.load("assets/wall.png").convert_alpha()
     catapult_image = pygame.image.load('assets/cannon.png').convert_alpha()
     background_image = pygame.image.load('assets/background.webp').convert()
@@ -18,7 +20,9 @@ def setup_sprites():
         'wall_image': wall_image,
         'catapult_image': catapult_image,
         'background_image': background_image,
-        'life_image': life_image
+        'life_image': life_image,
+        'goblin_slow_image': goblin_slow_image,
+        'explosion_image': explosion_image
     }
 
     return sprites
