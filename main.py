@@ -9,6 +9,9 @@ from projectile import Projectile
 from wall import Wall
 from cart import Cart
 from ground import Ground
+import math
+import mido
+import threading
 
 # Pygame initialization
 pygame.init()
@@ -31,8 +34,48 @@ all_sprites.add(catapult)
 all_sprites.add(wall)
 all_sprites.add(ground)
 
+remapped_angle = 0
+remapped_slider = 1000
+
+def handle_midi_input():
+    print("Available MIDI Input Devices:")
+    for device in mido.get_input_names():
+        print(device)
+        
+    global remapped_angle
+    global remapped_slider
+
+    # Abrimos el device y puerto MIDI    
+    with mido.open_input('nanoKONTROL2 0') as port:
+        for msg in port:
+            if msg.type == 'control_change':
+                #ANGULO
+                if msg.control == 32:  # Este es el id del knob 1 del controller
+                    remapped_angle = ((msg.value / 127) * 90)+90
+                    print(remapped_angle)
+                #SLIDER
+                elif msg.control == 24:  # Este es el id del slider 1 del controller
+                    remapped_slider = ((msg.value / 127) * 1500)
+                #TRIGGER
+                elif msg.control == 0:  # Este es el id del toggle 1 del controller
+                    catapult.launch_projectile(all_sprites, projectiles, remapped_slider, remapped_angle)
+                    
+
+def calculate_endpoint(origin, angle, length):
+    end_x = origin[0] + length * math.cos(angle)
+    end_y = origin[1] - length * math.sin(angle)  # Subtracting because the y-coordinate increases downwards
+    return (end_x, end_y)
+
+# Length of the line
+length = 40
+
 # Main game loop
 running = True
+
+midi_thread = threading.Thread(target=handle_midi_input)
+midi_thread.daemon = True
+midi_thread.start()
+
 while running:
     screen.fill(BLACK)
     if(cart_spawn_cooldown > 0):
@@ -47,7 +90,8 @@ while running:
             mouse_pressed_time = pygame.time.get_ticks()
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             mouse_held_duration = pygame.time.get_ticks() - mouse_pressed_time
-            catapult.launch_projectile(all_sprites, projectiles, mouse_held_duration)
+            catapult.launch_projectile(all_sprites, projectiles, mouse_held_duration, remapped_angle)
+            print(mouse_held_duration)
 
     all_sprites.update()
     catapult.draw_cooldown(screen)
@@ -55,7 +99,10 @@ while running:
 
     all_sprites.draw(screen)
 
-    pygame.draw.line(screen, (255, 255, 255), catapult.rect.center, mouse_pos, 2)
+    angle_radians = math.radians(remapped_angle)
+    end_point = calculate_endpoint(catapult.rect.center, angle_radians, length)
+
+    pygame.draw.line(screen, (255, 0, 0), catapult.rect.center, end_point, 2)
 
     for cart in carts:
         cart.draw_speed(screen)

@@ -30,10 +30,11 @@ class Catapult(pygame.sprite.Sprite):
         cooldown_text = self.font.render(str(self.cooldown), True, (255, 255, 255))
         screen.blit(cooldown_text, (self.rect.x, self.rect.y - 40))
 
-    def launch_projectile(self, all_sprites, projectiles, mouse_held_duration):
+    def launch_projectile(self, all_sprites, projectiles, mouse_held_duration, remapped_angle):
         if self.cooldown == 0:
             initial_speed = 5 + mouse_held_duration // 100
-            projectile = Projectile(self.rect.centerx, self.rect.centery, self.angle, initial_speed, self.dwarf_image)
+            midi_angle = remapped_angle
+            projectile = Projectile(self.rect.centerx, self.rect.centery, midi_angle, initial_speed, self.dwarf_image)
             all_sprites.add(projectile)
             projectiles.add(projectile)
             self.cooldown = CATAPULT_COOLDOWN_TIME
