@@ -14,13 +14,20 @@ class Catapult(pygame.sprite.Sprite):
         self.rect.bottom = SCREEN_HEIGHT - 75
         self.cooldown = 0
         self.min_angle = 90
-        self.max_angle = 180 
-        self.angle = 90 
-        
+        self.max_angle = 180
+        self.angle = 90
+        self.font = pygame.font.Font(None, 24)
+
     def update(self):
         self.current_sprite = 1
         if self.cooldown > 0:
             self.cooldown -= 1
+
+    def draw_cooldown(self, screen):
+        cooldown_percentage = self.cooldown / CATAPULT_COOLDOWN_TIME
+        pygame.draw.rect(screen, GREEN, (self.rect.x, self.rect.y - 20, self.rect.width * cooldown_percentage, 10))
+        cooldown_text = self.font.render(str(self.cooldown), True, (255, 255, 255))
+        screen.blit(cooldown_text, (self.rect.x, self.rect.y - 40))
 
     def launch_projectile(self, all_sprites, projectiles, mouse_held_duration):
         if self.cooldown == 0:

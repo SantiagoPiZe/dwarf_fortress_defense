@@ -50,7 +50,7 @@ while running:
             catapult.launch_projectile(all_sprites, projectiles, mouse_held_duration)
 
     all_sprites.update()
-
+    catapult.draw_cooldown(screen)
     mouse_pos = pygame.mouse.get_pos()
 
     all_sprites.draw(screen)

@@ -2,9 +2,10 @@ def init():
     global lives
     lives = 3
 
+
 init()
 
-#screen config
+# screen config
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
