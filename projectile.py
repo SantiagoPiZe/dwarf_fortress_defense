@@ -9,25 +9,33 @@ class Projectile(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.transform.scale(dwarf_image, (40, 40))
         self.rect = self.image.get_rect()
+
+        #Convert pixels to meters
+        self.initial_x = x / 50 # 1 mt = 50 px
+        self.initial_y = y / 50 # 1 mt = 50 px
+
         self.rect.center = (x, y)
-        self.angle = math.radians(angle)
-        self.speed = initial_speed
-        self.gravity = 0.5
-        self.vx = self.speed * math.cos(self.angle)
+        self.angle = math.radians(180 - angle)
+        self.speed = initial_speed 
+        self.gravity = 9.8
+        self.vx = -self.speed * math.cos(self.angle)
         self.vy = -self.speed * math.sin(self.angle)
         self.weight = random.uniform(1, 3)
         self.on_ground = False
+        self.start_time_in_sec = pygame.time.get_ticks() / 1000
 
     def update(self):
-        self.rect.x += self.vx
-        if (not self.on_ground):
-            self.vy += self.gravity
-            self.rect.y += self.vy
-        else:
-            self.vy = 0
-            self.vx = -1
-            if (-1 < self.vx < 1):
-                self.vx = -1
+        current_time = pygame.time.get_ticks() / 1000
+        t = current_time - self.start_time_in_sec  
 
-        if not pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT).contains(self.rect):
+        # Calculate the new position
+        dx = self.vx * t + self.initial_x
+        dy = (0.5 * self.gravity * t ** 2) + (self.vy * t) + self.initial_y
+
+        # Reverse conversion from meters to pixels
+        self.rect.x = dx * 50
+        if(self.on_ground is False):
+            self.rect.y = dy * 50
+
+        if not pygame.Rect(0, 0, SCREEN_WIDTH + self.rect.width, SCREEN_HEIGHT + self.rect.height).contains(self.rect):
             self.kill()

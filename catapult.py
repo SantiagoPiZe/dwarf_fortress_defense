@@ -12,7 +12,7 @@ class Catapult(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(pygame.transform.scale(self.original_image, (50, 50)), -90)
         self.rect = self.image.get_rect()
         self.rect.right = SCREEN_WIDTH - 10
-        self.rect.bottom = SCREEN_HEIGHT - 75
+        self.rect.bottom = SCREEN_HEIGHT - 85
         self.cooldown = 0
         self.min_angle = 90
         self.max_angle = 180
@@ -32,7 +32,7 @@ class Catapult(pygame.sprite.Sprite):
 
     def launch_projectile(self, all_sprites, projectiles, mouse_held_duration):
         if self.cooldown == 0:
-            initial_speed = 5 + mouse_held_duration // 100
+            initial_speed = mouse_held_duration // 100
             projectile = Projectile(self.rect.centerx, self.rect.centery, self.angle, initial_speed, self.dwarf_image)
             all_sprites.add(projectile)
             projectiles.add(projectile)
