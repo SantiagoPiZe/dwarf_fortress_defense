@@ -35,6 +35,5 @@ class Projectile(pygame.sprite.Sprite):
         # Reverse conversion from meters to pixels
         self.rect.x = dx * 50
         self.rect.y = dy * 50
-        print(self.rect)
         if not pygame.Rect(0, 0, SCREEN_WIDTH + self.rect.width, SCREEN_HEIGHT + self.rect.height).contains(self.rect):
             self.kill()
