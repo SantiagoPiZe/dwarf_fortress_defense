@@ -32,7 +32,7 @@ class Catapult(pygame.sprite.Sprite):
 
     def launch_projectile(self, all_sprites, projectiles, mouse_held_duration):
         if self.cooldown == 0:
-            initial_speed = 5 + mouse_held_duration // 100
+            initial_speed = mouse_held_duration // 100
             projectile = Projectile(self.rect.centerx, self.rect.centery, self.angle, initial_speed, self.dwarf_image)
             all_sprites.add(projectile)
             projectiles.add(projectile)
