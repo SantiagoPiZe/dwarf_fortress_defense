@@ -9,11 +9,8 @@ class Projectile(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.transform.scale(dwarf_image, (40, 40))
         self.rect = self.image.get_rect()
-
-        #Convert pixels to meters
-        self.initial_x = x / 50 # 1 mt = 50 px
-        self.initial_y = y / 50 # 1 mt = 50 px
-
+        self.initial_x = x / 50
+        self.initial_y = y / 50
         self.rect.center = (x, y)
         self.angle = math.radians(180 - angle)
         self.speed = initial_speed 
@@ -26,13 +23,9 @@ class Projectile(pygame.sprite.Sprite):
 
     def update(self):
         current_time = pygame.time.get_ticks() / 1000
-        t = current_time - self.start_time_in_sec  
-
-        # Calculate the new position
+        t = current_time - self.start_time_in_sec
         dx = self.vx * t + self.initial_x
         dy = (0.5 * self.gravity * t ** 2) + (self.vy * t) + self.initial_y
-
-        # Reverse conversion from meters to pixels
         self.rect.x = dx * 50
         if(self.on_ground is False):
             self.rect.y = dy * 50
