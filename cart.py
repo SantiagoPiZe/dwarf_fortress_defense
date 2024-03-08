@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 import config
@@ -11,23 +13,23 @@ class Cart(pygame.sprite.Sprite):
         self.image_slow = pygame.transform.scale(goblin_slow_image, (100, 100))
         self.explosion_image = pygame.transform.scale(explosion_image, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.left = 0
+        self.initial_x = self.rect.left / 50
         self.rect.bottom = SCREEN_HEIGHT - 55
         self.speed = velocity
         self.start_time_in_sec = pygame.time.get_ticks() / 1000
-        self.weight = 5
+        self.weight = random.randint(10, 30)
         self.wall_instance = wall_instance
         self.ttl = 2500
-        self.x0 = 0
+        self.x0 = self.initial_x
         self.font = pygame.font.Font(None, 24)
         self.exploding_time = 10
-
 
     def update(self):
         t = pygame.time.get_ticks() / 1000 - self.start_time_in_sec
         # MRU: x = x0 + v * t
+        dx = self.x0 + self.speed * t
+        self.rect.x = dx * 50
         self.has_collided_with_wall()
-        self.rect.x = self.x0 + self.speed * t
         self.ttl -= 1
         if self.ttl <= 0:
             self.explode(decrease_live=False)
@@ -47,7 +49,6 @@ class Cart(pygame.sprite.Sprite):
 
 
     def add_dwarf(self, dwarf):
-        # Conservación del momento lineal: p_before = p_after
         # p_before = m1 * v1 + m2 * v2
         # p_after = (m1 + m2) * v_after
         # v_after = (m1 * v1 + m2 * v2) / (m1 + m2)
@@ -55,7 +56,7 @@ class Cart(pygame.sprite.Sprite):
         total_weight_after = self.weight + dwarf.weight
         self.speed = total_momentum_before / total_weight_after
         self.weight = total_weight_after
-        self.x0 = self.rect.x
+        self.x0 = self.rect.x / 50
         self.start_time_in_sec = pygame.time.get_ticks() / 1000
         self.image = self.image_slow
         dwarf.kill()
