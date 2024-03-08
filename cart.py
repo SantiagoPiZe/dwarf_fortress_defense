@@ -67,7 +67,6 @@ class Cart(pygame.sprite.Sprite):
             self.explode(decrease_live=True)
 
     def explode(self, decrease_live):
-        t = pygame.time.get_ticks() / 1000
         if(self.exploding_time > 0):
                 self.image = self.explosion_image
                 self.exploding_time = self.exploding_time - 1
